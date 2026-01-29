@@ -38,5 +38,32 @@ pipeline {
                 '''
             }
         }
+
+        stage('Staging Deploy') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                echo "Deploying application to staging..."
+                nohup python main.py > staging.log 2>&1 &
+                echo $! > staging.pid
+                '''
+            }
+        }
+
+        stage('Monitor Staging') {
+            steps {
+                sh '''
+                echo "Monitoring staging deployment..."
+
+                if ps -p $(cat staging.pid) > /dev/null
+                then
+                    echo "✅ Application is running in staging"
+                else
+                    echo "❌ Application is NOT running"
+                    exit 1
+                fi
+                '''
+            }
+        }
     }
 }
