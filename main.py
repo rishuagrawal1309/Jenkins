@@ -1,2 +1,6 @@
-print("Hello, Jenkins!")
-print("This is a simple Python program.")
+import time
+
+print("Staging app started...")
+
+while True:
+    time.sleep(5)
