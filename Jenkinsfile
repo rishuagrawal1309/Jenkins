@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Setup venv') {
             steps {
                 sh '''
@@ -10,6 +11,20 @@ pipeline {
                 pip install --upgrade pip
                 if [ -f requirements.txt ]; then
                     pip install -r requirements.txt
+                fi
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                if [ -f test_main.py ]; then
+                    pip install pytest
+                    pytest
+                else
+                    echo "No tests found, skipping test stage"
                 fi
                 '''
             }
