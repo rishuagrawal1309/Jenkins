@@ -51,19 +51,23 @@ pipeline {
         }
 
         stage('Monitor Staging') {
-            steps {
-                sh '''
-                echo "Monitoring staging deployment..."
+    steps {
+        sh '''
+        echo "Monitoring staging deployment..."
 
-                if ps -p $(cat staging.pid) > /dev/null
-                then
-                    echo "✅ Application is running in staging"
-                else
-                    echo "❌ Application is NOT running"
-                    exit 1
-                fi
-                '''
-            }
+        if ps -p $(cat staging.pid) > /dev/null
+        then
+            echo "✅ Application is running in staging"
+            echo "Stopping staging app..."
+            kill $(cat staging.pid)
+        else
+            echo "❌ Application is NOT running"
+            exit 1
+        fi
+        '''
+    }
+}
+
         }
     }
 }
